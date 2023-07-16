@@ -10,7 +10,7 @@
     <CreateProperty Value="$(DefineConstants);ProductVersion=%(AsmInfo.Version)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
-    <CreateProperty Value="$(SolutionName)-$(Configuration)-%(AsmInfo.Version)">
+    <CreateProperty Value="$(SolutionName)-v%(AsmInfo.Version)">
       <Output TaskParameter="Value" PropertyName="NewOutputName" />
     </CreateProperty>
   </Target>
