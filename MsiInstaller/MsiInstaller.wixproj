@@ -1,0 +1,24 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.0">
+  <ItemGroup>
+    <ProjectReference Include="..\WinAwake\WinAwake.csproj" />
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.0" />
+  <Target Name="BeforeBuild">
+    <GetAssemblyIdentity AssemblyFiles="..\WinAwake\bin\$(Configuration)\WinAwake.exe">
+      <Output TaskParameter="Assemblies" ItemName="AsmInfo" />
+    </GetAssemblyIdentity>
+    <CreateProperty Value="$(DefineConstants);ProductVersion=%(AsmInfo.Version)">
+      <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
+    <CreateProperty Value="$(SolutionName)-$(Configuration)-%(AsmInfo.Version)">
+      <Output TaskParameter="Value" PropertyName="NewOutputName" />
+    </CreateProperty>
+  </Target>
+  <Target Name="AfterBuild" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetDir)MsiInstaller.msi" DestinationFiles="$(TargetDir)$(NewOutputName).msi" />
+    <Copy SourceFiles="$(TargetDir)MsiInstaller.wixpdb" DestinationFiles="$(TargetDir)$(NewOutputName).wixpdb" />
+    <Delete Files="$(TargetDir)MsiInstaller.msi" />
+    <Delete Files="$(TargetDir)MsiInstaller.wixpdb" />
+    <Message Text="Outputs were renamed to $(NewOutputName).*" Importance="high" />
+  </Target>
+</Project>

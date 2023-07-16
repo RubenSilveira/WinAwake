@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAwake", "WinAwake\WinAwake.csproj", "{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA820507-8D9A-4311-9790-E3481B2DB141}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{A0D8C2EF-CC6E-444F-9460-5719621017CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{A89246CE-8B21-4562-8BD2-C75AC1C3D61B}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Icons\Idle.ico = Resources\Icons\Idle.ico
+		Resources\Icons\Main.ico = Resources\Icons\Main.ico
+	EndProjectSection
+EndProject
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "MsiInstaller", "MsiInstaller\MsiInstaller.wixproj", "{E936A276-D3FA-46E9-93E6-5B69A596FA6D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|ARM64.Build.0 = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|x64.Build.0 = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3}.Release|x86.Build.0 = Release|Any CPU
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|ARM64.Build.0 = Debug|ARM64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|x64.ActiveCfg = Debug|x64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|x64.Build.0 = Debug|x64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|x86.ActiveCfg = Debug|x86
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Debug|x86.Build.0 = Debug|x86
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|Any CPU.ActiveCfg = Release|x86
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|ARM64.ActiveCfg = Release|ARM64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|ARM64.Build.0 = Release|ARM64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|x64.ActiveCfg = Release|x64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|x64.Build.0 = Release|x64
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|x86.ActiveCfg = Release|x86
+		{E936A276-D3FA-46E9-93E6-5B69A596FA6D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A0D8C2EF-CC6E-444F-9460-5719621017CC} = {AA820507-8D9A-4311-9790-E3481B2DB141}
+		{A89246CE-8B21-4562-8BD2-C75AC1C3D61B} = {A0D8C2EF-CC6E-444F-9460-5719621017CC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7617D03C-C653-44CA-963F-230FAEEF6CBD}
+	EndGlobalSection
+EndGlobal

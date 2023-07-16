@@ -1,0 +1,43 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="WinAwake" Manufacturer="WinAwake"
+			 Version="!(bind.FileVersion.WinAwake.exe)"
+			 Scope="perUser"
+			 UpgradeCode="FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3"
+			 ProductCode="FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3">
+		<MajorUpgrade DowngradeErrorMessage="A newer version of WinAwake is already installed." />
+		<Media Id="1" EmbedCab="yes" Cabinet="WinAwake" />
+		<Icon Id="WinAwake" SourceFile="..\Resources\Icons\Main.ico" />
+		<Property Id="ARPPRODUCTICON" Value="WinAwake" />
+		<Property Id="ARPNOMODIFY" Value="yes" />
+		<Property Id="ARPHELPLINK" Value="https://github.com/RubenSilveira/WinAwake" />
+		<Property Id="ARPURLINFOABOUT" Value="https://github.com/RubenSilveira/WinAwake" />
+		<Property Id="ARPURLUPDATEINFO" Value="https://github.com/RubenSilveira/WinAwake" />
+
+		<StandardDirectory Id="LocalAppDataFolder">
+			<Directory Id="INSTALLFOLDER" Name="WinAwake" />
+		</StandardDirectory>
+
+		<Feature Id="WinAwake">
+			<Component Guid="FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3" Directory="INSTALLFOLDER">
+				<RegistryValue Root="HKCU" Key="Software\WinAwake"
+							   Value="[INSTALLFOLDER]"
+							   Type="string"
+							   KeyPath="yes" />
+				<File Id="WinAwake.exe" Source="WinAwake.exe">
+					<Shortcut Name="WinAwake" Directory="StartMenuFolder" />
+					<Shortcut Name="WinAwake" Directory="StartupFolder" />
+				</File>
+				<RemoveFolder Directory="INSTALLFOLDER" On="uninstall" />
+			</Component>
+		</Feature>
+		
+		<InstallExecuteSequence>
+			<Custom Action="Start_WinAwake.exe" Before="InstallFinalize" />
+		</InstallExecuteSequence>
+	</Package>
+	<Fragment>
+		<CustomAction Id="Start_WinAwake.exe" Execute="commit" Impersonate="yes" Return="asyncNoWait"
+					  Directory="INSTALLFOLDER"
+					  ExeCommand="[INSTALLFOLDER]WinAwake.exe" />
+	</Fragment>
+</Wix>
