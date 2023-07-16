@@ -15,15 +15,15 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("WinAwake")]
 [assembly: Guid("FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3")]
 
-[assembly: AssemblyVersion("1.23.7.16")]
+[assembly: AssemblyVersion("2.23.7.16")]
 
 class App : ApplicationContext
 {
     private static readonly Icon MainIcon;
     private static readonly Icon IdleIcon;
 
-    private readonly SysTray sysTray;
     private readonly Worker worker;
+    private readonly SysTray sysTray;
 
     static App()
     {
@@ -64,32 +64,44 @@ class App : ApplicationContext
 
     public App()
     {
-        sysTray = new SysTray("Idle", IdleIcon);
         worker = new Worker();
 
-        sysTray.DoubleClicked += SysTray_DoubleClicked;
+        sysTray = new SysTray("Idle", false, IdleIcon)
+        {
+            ActiveOnStartChecked = Settings.ActiveOnStart
+        };
+
+        sysTray.ActiveActivated += SysTray_ActiveActivated;
+        sysTray.ActiveOnStartActivated += SysTray_ActiveOnStartActivated;
         sysTray.ExitActivated += SysTray_ExitActivated;
 
-        if (0 != (int)Registry.GetValue("HKEY_CURRENT_USER\\Software\\WinAwake", "ActiveOnStart", 0))
+        if (sysTray.ActiveOnStartChecked)
         {
-            SysTray_DoubleClicked(null, null);
+            SysTray_ActiveActivated(null, null);
         }
     }
 
-    private void SysTray_DoubleClicked(object sender, EventArgs e)
+    private void SysTray_ActiveActivated(object sender, EventArgs e)
     {
-        if (worker.Enabled)
+        worker.Enabled = false;
+
+        if (sysTray.ActiveChecked)
         {
-            worker.Enabled = false;
-            sysTray.AppendedTitleText = "Idle";
-            sysTray.Icon = IdleIcon;
+            sysTray.SetStatus("Idle", false, IdleIcon);
         }
         else
         {
+            sysTray.SetStatus("Active", true, MainIcon);
+
             worker.Enabled = true;
-            sysTray.AppendedTitleText = "Active";
-            sysTray.Icon = MainIcon;
         }
+    }
+
+    private void SysTray_ActiveOnStartActivated(object sender, EventArgs e)
+    {
+        sysTray.ActiveOnStartChecked = !sysTray.ActiveOnStartChecked;
+
+        Settings.ActiveOnStart = sysTray.ActiveOnStartChecked;
     }
 
     private void SysTray_ExitActivated(object sender, EventArgs e)

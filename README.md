@@ -28,9 +28,9 @@ install in mind:
 
 - Contributions are always welcome!
 - To do:
-	- Configurable startup state, battery power detection, lock status detection,
-timers, hotkeys, configurable action time interval, application configuration per
-settings & per command line, different action modes and a simple about box! :)
+	- Battery power detection, lock status detection, timers, hotkeys,
+configurable action time interval, application configuration per settings vs. per
+command line, different action modes and a simple about box! :grinning:
 
 ## License
 
@@ -38,6 +38,14 @@ This code is published under [The
 MIT License](https://github.com/RubenSilveira/WinAwake/blob/main/LICENSE).
 
 ## Changelog
+
+### Version 2 (2023-07-16)
+
+Features:
+* Configurable startup state.
+
+Bugs:
+* Registry reading on startup was causing a crash.
 
 ### Version 1 (2023-07-16)
 

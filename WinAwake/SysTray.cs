@@ -6,57 +6,84 @@ using System.Windows.Forms;
 
 class SysTray : Component
 {
+    private readonly ToolStripMenuItem activeToolStripMenuItem;
+    private readonly ToolStripMenuItem activeOnStartToolStripMenuItem;
     private readonly NotifyIcon notifyIcon;
 
+    internal event EventHandler ActiveActivated;
+    internal event EventHandler ActiveOnStartActivated;
     internal event EventHandler ExitActivated;
-    internal event EventHandler DoubleClicked;
 
-    internal SysTray(string initialAppendedTitleText, Icon initialIcon)
+    internal SysTray(string status, bool activeStatus, Icon icon)
     {
+        activeToolStripMenuItem = new ToolStripMenuItem("Active", null, OnActiveActivated);
+
+        activeOnStartToolStripMenuItem = new ToolStripMenuItem("Active on Start", null, OnActiveOnStartActivated)
+        {
+            Checked = Settings.ActiveOnStart
+        };
+
         notifyIcon = new NotifyIcon()
         {
             ContextMenuStrip = new ContextMenuStrip()
             {
                 Items =
                 {
-                    new ToolStripMenuItem("Exit", null, new EventHandler(OnExitActivated))
+                activeToolStripMenuItem,
+                    new ToolStripSeparator(),
+                    activeOnStartToolStripMenuItem,
+                    new ToolStripSeparator(),
+                    new ToolStripMenuItem("Exit", null, OnExitActivated)
                 }
             },
             Visible = true
         };
 
-        AppendedTitleText = initialAppendedTitleText;
+        notifyIcon.Click += OnActiveActivated;
 
-        notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
-
-        Icon = initialIcon;
+        SetStatus(status, activeStatus, icon);
     }
 
-    internal string AppendedTitleText
+    internal void SetStatus(string status, bool activeStatus, Icon icon)
     {
-        set
+        notifyIcon.Text = Assembly.GetExecutingAssembly().GetName().Name;
+        if (status?.Trim().Length > 0)
         {
-            notifyIcon.Text = Assembly.GetExecutingAssembly().GetName().Name;
-
-            if (value?.Trim().Length > 0)
-            {
-                notifyIcon.Text += "\n" + value.Trim();
-            }
+            notifyIcon.Text += "\n" + status.Trim();
         }
+
+        activeToolStripMenuItem.Checked = activeStatus;
+
+        notifyIcon.Icon = icon;
     }
 
-    internal Icon Icon
+    internal bool ActiveChecked
     {
-        get => notifyIcon.Icon;
-        set => notifyIcon.Icon = value;
+        get => activeToolStripMenuItem.Checked;
     }
 
-    private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+    internal bool ActiveOnStartChecked
     {
-        DoubleClicked?.Invoke(this, EventArgs.Empty);
+        get => activeOnStartToolStripMenuItem.Checked;
+        set => activeOnStartToolStripMenuItem.Checked = value;
     }
 
-    private void OnExitActivated(object sender, EventArgs e)
+    internal void OnActiveActivated(object sender, EventArgs e)
+    {
+        if (e is MouseEventArgs args && MouseButtons.Right == args.Button)
+        {
+            return;
+        }
+
+        ActiveActivated?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void OnActiveOnStartActivated(object sender, EventArgs e)
+    {
+        ActiveOnStartActivated?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void OnExitActivated(object sender, EventArgs e)
     {
         ExitActivated?.Invoke(this, EventArgs.Empty);
     }
