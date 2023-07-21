@@ -1,16 +1,19 @@
 # WinAwake
 
-Prevents your Windows computer from going to sleep or hibernate, your screen from
-going blank, your screensaver from starting and even other applications from
-detecting user inactivity.
+Prevents your Windows computer from going to sleep or hibernate, your
+screen from going blank, your screensaver from starting and even other
+applications from detecting user inactivity.
 
-It it a very simple utility looking like a play symbol that sits on your system
-tray: red when active, grey when idle.
+It is a very simple utility looking like a play symbol that sits on your
+system tray: red when active, grey when idle.
+
+It installs and runs under the user's context, so no administrative
+rights are necessary.
 
 ## Requirements
 
-- Targeting .NET Framework 4.6 (through 4.8.1), with compatibility and ease of
-install in mind:
+- Targeting .NET Framework 4.6 (through 4.8.1), with compatibility and
+ease of install in mind:
 	- Runtime support installed by default on Windows 10+;
 	- Runtime support installable on Vista, 7, 8 and 8.1.
 
@@ -28,26 +31,27 @@ install in mind:
 
 - Contributions are always welcome!
 - To do:
-	- Battery power detection, lock status detection, timers, hotkeys,
-configurable action time interval, application configuration per settings vs. per
-command line, different action modes and a simple about box! :grinning:
+	- Battery power detection, timers, hotkeys, configurable action time
+interval, command line options, different action modes and a simple about
+box! :grinning:
 
 ## License
 
-This code is published under [The
+Published under [The
 MIT License](https://github.com/RubenSilveira/WinAwake/blob/main/LICENSE).
 
 ## Changelog
 
-### Version 2 (2023-07-16)
+### v3 (2023-07-21)
+	Features:
+	- Locked session detection
 
-Features:
-* Configurable startup state.
+### v2 (2023-07-16)
+	Features:
+	- Configurable startup state.
+	Bugs:
+	- Registry reading on startup was causing a crash.
 
-Bugs:
-* Registry reading on startup was causing a crash.
-
-### Version 1 (2023-07-16)
-
-Features:
-* Initial version.
+### v1 (2023-07-16)
+	Features:
+	- Initial version.

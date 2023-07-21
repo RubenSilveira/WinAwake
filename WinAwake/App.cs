@@ -15,7 +15,7 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("WinAwake")]
 [assembly: Guid("FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3")]
 
-[assembly: AssemblyVersion("2.23.7.16")]
+[assembly: AssemblyVersion("3.23.7.21")]
 
 class App : ApplicationContext
 {
@@ -79,6 +79,8 @@ class App : ApplicationContext
         {
             SysTray_ActiveActivated(null, null);
         }
+
+        SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
     }
 
     private void SysTray_ActiveActivated(object sender, EventArgs e)
@@ -94,6 +96,27 @@ class App : ApplicationContext
             sysTray.SetStatus("Active", true, MainIcon);
 
             worker.Enabled = true;
+        }
+    }
+
+    private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+    {
+        switch (e.Reason)
+        {
+            case SessionSwitchReason.SessionLock:
+            case SessionSwitchReason.RemoteDisconnect:
+            case SessionSwitchReason.ConsoleDisconnect:
+            case SessionSwitchReason.SessionLogoff:
+                worker.Enabled = false;
+                break;
+            case SessionSwitchReason.SessionUnlock:
+            case SessionSwitchReason.RemoteConnect:
+            case SessionSwitchReason.ConsoleConnect:
+                if (sysTray.ActiveChecked)
+                {
+                    worker.Enabled = true;
+                }
+                break;
         }
     }
 
