@@ -16,7 +16,7 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("WinAwake")]
 [assembly: Guid("FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3")]
 
-[assembly: AssemblyVersion("1.23.7.21")]
+[assembly: AssemblyVersion("3.23.7.21")]
 
 class App : ApplicationContext
 {
