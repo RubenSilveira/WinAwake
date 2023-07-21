@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Timers;
 
@@ -9,7 +8,7 @@ class Worker : Timer
     private static readonly Random Random = new Random();
 #endif
 
-    public Worker()
+    internal Worker()
     {
         Interval =
 #if DEBUG
@@ -20,10 +19,10 @@ class Worker : Timer
         ;
         AutoReset = false;
         Interval *= 1000;
-        Elapsed += Awake;
+        Elapsed += Worker_Elapsed;
     }
 
-    private void Awake(object sender, ElapsedEventArgs e)
+    private void Worker_Elapsed(object sender, ElapsedEventArgs e)
     {
         try
         {

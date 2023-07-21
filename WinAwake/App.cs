@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -15,7 +16,7 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("WinAwake")]
 [assembly: Guid("FE3D24DB-5C73-4AC0-AB1F-C4E76A45D5C3")]
 
-[assembly: AssemblyVersion("3.23.7.21")]
+[assembly: AssemblyVersion("1.23.7.21")]
 
 class App : ApplicationContext
 {
@@ -23,6 +24,7 @@ class App : ApplicationContext
     private static readonly Icon IdleIcon;
 
     private readonly Worker worker;
+    private readonly UpdateChecker updateChecker;
     private readonly SysTray sysTray;
 
     static App()
@@ -65,6 +67,9 @@ class App : ApplicationContext
     public App()
     {
         worker = new Worker();
+        updateChecker = new UpdateChecker();
+
+        updateChecker.StatusChanged += UpdateChecker_StatusChanged;
 
         sysTray = new SysTray("Idle", false, IdleIcon)
         {
@@ -73,6 +78,7 @@ class App : ApplicationContext
 
         sysTray.ActiveActivated += SysTray_ActiveActivated;
         sysTray.ActiveOnStartActivated += SysTray_ActiveOnStartActivated;
+        sysTray.UpdateActivated += SysTray_UpdateActivated;
         sysTray.ExitActivated += SysTray_ExitActivated;
 
         if (sysTray.ActiveOnStartChecked)
@@ -81,6 +87,14 @@ class App : ApplicationContext
         }
 
         SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+    }
+
+    private void UpdateChecker_StatusChanged(object sender, EventArgs e)
+    {
+        if (updateChecker.UpdateAvailable)
+        {
+            sysTray.UpdateAvailable = true;
+        }
     }
 
     private void SysTray_ActiveActivated(object sender, EventArgs e)
@@ -125,6 +139,18 @@ class App : ApplicationContext
         sysTray.ActiveOnStartChecked = !sysTray.ActiveOnStartChecked;
 
         Settings.ActiveOnStart = sysTray.ActiveOnStartChecked;
+    }
+
+    private void SysTray_UpdateActivated(object sender, EventArgs e)
+    {
+        if (updateChecker.UpdateAvailable)
+        {
+            Process.Start(new ProcessStartInfo { FileName = "https://github.com/RubenSilveira/WinAwake/releases/latest", UseShellExecute = true });
+        }
+        else
+        {
+            Process.Start(new ProcessStartInfo { FileName = "https://github.com/RubenSilveira/WinAwake", UseShellExecute = true });
+        }
     }
 
     private void SysTray_ExitActivated(object sender, EventArgs e)

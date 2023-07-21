@@ -48,6 +48,9 @@
     <Compile Include="SysTray.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UpdateChecker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="User32.cs" />
     <Compile Include="Worker.cs">
       <SubType>Component</SubType>

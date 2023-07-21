@@ -8,10 +8,12 @@ class SysTray : Component
 {
     private readonly ToolStripMenuItem activeToolStripMenuItem;
     private readonly ToolStripMenuItem activeOnStartToolStripMenuItem;
+    private readonly ToolStripMenuItem updateToolStripMenuItem;
     private readonly NotifyIcon notifyIcon;
 
     internal event EventHandler ActiveActivated;
     internal event EventHandler ActiveOnStartActivated;
+    internal event EventHandler UpdateActivated;
     internal event EventHandler ExitActivated;
 
     internal SysTray(string status, bool activeStatus, Icon icon)
@@ -23,6 +25,8 @@ class SysTray : Component
             Checked = Settings.ActiveOnStart
         };
 
+        updateToolStripMenuItem = new ToolStripMenuItem("Up-to-date", null, OnUpdateActivated);
+
         notifyIcon = new NotifyIcon()
         {
             ContextMenuStrip = new ContextMenuStrip()
@@ -32,6 +36,8 @@ class SysTray : Component
                 activeToolStripMenuItem,
                     new ToolStripSeparator(),
                     activeOnStartToolStripMenuItem,
+                    new ToolStripSeparator(),
+                    updateToolStripMenuItem,
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Exit", null, OnExitActivated)
                 }
@@ -68,6 +74,11 @@ class SysTray : Component
         set => activeOnStartToolStripMenuItem.Checked = value;
     }
 
+    internal bool UpdateAvailable
+    {
+        set => updateToolStripMenuItem.Text = (value ? "Update available" : "Up-to-data");
+    }
+
     internal void OnActiveActivated(object sender, EventArgs e)
     {
         if (e is MouseEventArgs args && MouseButtons.Right == args.Button)
@@ -81,6 +92,11 @@ class SysTray : Component
     internal void OnActiveOnStartActivated(object sender, EventArgs e)
     {
         ActiveOnStartActivated?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void OnUpdateActivated(object sender, EventArgs e)
+    {
+        UpdateActivated?.Invoke(this, EventArgs.Empty);
     }
 
     internal void OnExitActivated(object sender, EventArgs e)

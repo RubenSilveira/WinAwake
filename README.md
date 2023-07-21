@@ -45,6 +45,7 @@ MIT License](https://github.com/RubenSilveira/WinAwake/blob/main/LICENSE).
 ### v3 (2023-07-21)
 	Features:
 	- Locked session detection
+	- Update checker
 
 ### v2 (2023-07-16)
 	Features:
