@@ -27,6 +27,9 @@ class App : ApplicationContext
     private readonly Worker worker;
     private readonly SysTray sysTray;
 
+    private bool activeStatus;
+    private bool isInSession;
+
     static App()
     {
         using (Stream strem = Assembly.GetExecutingAssembly().GetManifestResourceStream("WinAwake.Main.ico"))
@@ -66,61 +69,81 @@ class App : ApplicationContext
 
     public App()
     {
-        worker = new Worker();
+        // TODO: Can this even be determined on start?
+        isInSession = true;
 
-        sysTray = new SysTray("Idle", false, IdleIcon)
-        {
-            ActiveOnStartChecked = Settings.ActiveOnStart
-        };
+        worker = new Worker();
+        sysTray = new SysTray(Settings.ActiveOnStart);
 
         sysTray.ActiveActivated += SysTray_ActiveActivated;
         sysTray.ActiveOnStartActivated += SysTray_ActiveOnStartActivated;
         sysTray.UpdateActivated += SysTray_UpdateActivated;
         sysTray.ExitActivated += SysTray_ExitActivated;
 
-        if (sysTray.ActiveOnStartChecked)
-        {
-            SysTray_ActiveActivated(null, null);
-        }
-
         SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+        SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+
+        ActiveStatus = sysTray.ActiveOnStartChecked;
     }
 
-    private void SysTray_ActiveActivated(object sender, EventArgs e)
+    private bool ActiveStatus
     {
-        worker.Enabled = false;
-
-        if (sysTray.ActiveChecked)
+        set
         {
-            sysTray.SetStatus("Idle", false, IdleIcon);
-        }
-        else
-        {
-            sysTray.SetStatus("Active", true, MainIcon);
+            Debug.WriteLine("Setting status to " + value);
 
-            worker.Enabled = true;
+            bool isOnBatteryOnly = PowerLineStatus.Offline == SystemInformation.PowerStatus.PowerLineStatus;
+
+            activeStatus = value;
+            worker.Enabled = activeStatus && isInSession && !isOnBatteryOnly;
+
+            if (!activeStatus)
+            {
+                sysTray.SetStatus("Idle", false, IdleIcon);
+            }
+            else if (isInSession && !isOnBatteryOnly)
+            {
+                sysTray.SetStatus("Active", true, MainIcon);
+            }
+            else
+            {
+                sysTray.SetStatus("Paused", false, IdleIcon);
+
+                Debug.WriteLine("Setting status to Paused instead");
+            }
         }
     }
 
     private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
     {
-        switch (e.Reason)
+        Debug.WriteLine(e.Reason + " happening");
+
+        isInSession = (SessionSwitchReason.SessionUnlock == e.Reason
+            || SessionSwitchReason.RemoteConnect == e.Reason
+            || SessionSwitchReason.ConsoleConnect == e.Reason);
+
+        ActiveStatus = activeStatus;
+    }
+
+    private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    {
+        Debug.WriteLine(e.Mode + " happening");
+
+        if (PowerModes.Suspend == e.Mode)
         {
-            case SessionSwitchReason.SessionLock:
-            case SessionSwitchReason.RemoteDisconnect:
-            case SessionSwitchReason.ConsoleDisconnect:
-            case SessionSwitchReason.SessionLogoff:
-                worker.Enabled = false;
-                break;
-            case SessionSwitchReason.SessionUnlock:
-            case SessionSwitchReason.RemoteConnect:
-            case SessionSwitchReason.ConsoleConnect:
-                if (sysTray.ActiveChecked)
-                {
-                    worker.Enabled = true;
-                }
-                break;
+            isInSession = false;
         }
+        else if (PowerModes.Resume == e.Mode)
+        {
+            isInSession = true;
+        }
+
+        ActiveStatus = activeStatus;
+    }
+
+    private void SysTray_ActiveActivated(object sender, EventArgs e)
+    {
+        ActiveStatus = !activeStatus;
     }
 
     private void SysTray_ActiveOnStartActivated(object sender, EventArgs e)
@@ -155,6 +178,9 @@ class App : ApplicationContext
 
     private void SysTray_ExitActivated(object sender, EventArgs e)
     {
+        SystemEvents.SessionSwitch -= SystemEvents_SessionSwitch;
+        SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
+
         worker.Dispose();
         sysTray.Dispose();
 

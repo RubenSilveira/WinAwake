@@ -16,13 +16,13 @@ class SysTray : Component
     internal event EventHandler UpdateActivated;
     internal event EventHandler ExitActivated;
 
-    internal SysTray(string status, bool activeStatus, Icon icon)
+    internal SysTray(bool activeOnStart)
     {
         activeToolStripMenuItem = new ToolStripMenuItem("Active", null, OnActiveActivated);
 
         activeOnStartToolStripMenuItem = new ToolStripMenuItem("Active on start", null, OnActiveOnStartActivated)
         {
-            Checked = Settings.ActiveOnStart
+            Checked = activeOnStart
         };
 
         updateToolStripMenuItem = new ToolStripMenuItem("Check for update", null, OnUpdateActivated);
@@ -45,8 +45,6 @@ class SysTray : Component
         };
 
         notifyIcon.Click += OnActiveActivated;
-
-        SetStatus(status, activeStatus, icon);
     }
 
     internal void SetStatus(string status, bool activeStatus, Icon icon)
@@ -60,11 +58,6 @@ class SysTray : Component
         activeToolStripMenuItem.Checked = activeStatus;
 
         notifyIcon.Icon = icon;
-    }
-
-    internal bool ActiveChecked
-    {
-        get => activeToolStripMenuItem.Checked;
     }
 
     internal bool ActiveOnStartChecked
@@ -87,7 +80,7 @@ class SysTray : Component
 
     internal void OnActiveActivated(object sender, EventArgs e)
     {
-        if (e is MouseEventArgs args && MouseButtons.Right == args.Button)
+        if (e is MouseEventArgs mouseEventArgs && MouseButtons.Right == mouseEventArgs.Button)
         {
             return;
         }

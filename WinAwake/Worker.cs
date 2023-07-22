@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Timers;
 
@@ -16,9 +17,8 @@ class Worker : Timer
 #else
             50
 #endif
-        ;
+            * 1000;
         AutoReset = false;
-        Interval *= 1000;
         Elapsed += Worker_Elapsed;
     }
 
@@ -26,39 +26,48 @@ class Worker : Timer
     {
         try
         {
-            User32.SendInput(
-                1u,
-                new[] {
-                    new User32.INPUT
-                    {
-                        Type = (uint)User32.INPUTTYPE.INPUT_MOUSE,
-                        Data = new User32.MOUSEKEYBDHARDWAREINPUT
-                        {
-                            Mouse = new User32.MOUSEINPUT
+            if (1u != User32.SendInput(
+                        1u,
+                        new[] {
+                            new User32.INPUT
                             {
-                                X =
+                                Type = (uint)User32.INPUTTYPE.INPUT_MOUSE,
+                                Data = new User32.MOUSEKEYBDHARDWAREINPUT
+                                {
+                                    Mouse = new User32.MOUSEINPUT
+                                    {
+                                        X =
 #if DEBUG
-                                    Random.Next(15, 31) * (Random.Next(0, 2) * 2 - 1)
+                                            Random.Next(15, 31) * (Random.Next(0, 2) * 2 - 1)
 #else
-                                    0
+                                            0
 #endif
-                                ,
-                                Y =
+                                        ,
+                                        Y =
 #if DEBUG
-                                    Random.Next(15, 31) * (Random.Next(0, 2) * 2 - 1)
+                                            Random.Next(15, 31) * (Random.Next(0, 2) * 2 - 1)
 #else
-                                    0
+                                            0
 #endif
-                                ,
-                                MouseData = 0u,
-                                Flags = (uint)User32.MOUSEEVENTF.MOUSEEVENTF_MOVE,
-                                Time = 0u,
-                                ExtraInfo = IntPtr.Zero,
+                                        ,
+                                        MouseData = 0u,
+                                        Flags = (uint)User32.MOUSEEVENTF.MOUSEEVENTF_MOVE,
+                                        Time = 0u,
+                                        ExtraInfo = IntPtr.Zero,
+                                    }
+                                }
                             }
-                        }
-                    }
-                },
-                Marshal.SizeOf(typeof(User32.INPUT)));
+                        },
+                        Marshal.SizeOf(typeof(User32.INPUT))))
+            {
+                throw new ApplicationException($"SendInput failed with error 0x{Marshal.GetLastWin32Error():x8}");
+            }
+
+            Debug.WriteLine("Awoke");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Awake failed: " + ex.Message);
         }
         finally
         {
