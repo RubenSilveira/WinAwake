@@ -78,6 +78,7 @@ class App : ApplicationContext
         sysTray.ActiveActivated += SysTray_ActiveActivated;
         sysTray.ActiveOnStartActivated += SysTray_ActiveOnStartActivated;
         sysTray.UpdateActivated += SysTray_UpdateActivated;
+        sysTray.AboutActivated += SysTray_AboutActivated;
         sysTray.ExitActivated += SysTray_ExitActivated;
 
         SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
@@ -174,6 +175,11 @@ class App : ApplicationContext
                 sysTray.UpdateText = "No available update";
             }
         }
+    }
+
+    private void SysTray_AboutActivated(object sender, EventArgs e)
+    {
+        Process.Start(new ProcessStartInfo { FileName = "https://github.com/RubenSilveira/WinAwake", UseShellExecute = true });
     }
 
     private void SysTray_ExitActivated(object sender, EventArgs e)

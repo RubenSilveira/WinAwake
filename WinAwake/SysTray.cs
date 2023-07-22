@@ -14,6 +14,7 @@ class SysTray : Component
     internal event EventHandler ActiveActivated;
     internal event EventHandler ActiveOnStartActivated;
     internal event EventHandler UpdateActivated;
+    internal event EventHandler AboutActivated;
     internal event EventHandler ExitActivated;
 
     internal SysTray(bool activeOnStart)
@@ -36,7 +37,9 @@ class SysTray : Component
                     activeToolStripMenuItem,
                     new ToolStripSeparator(),
                     activeOnStartToolStripMenuItem,
+                    new ToolStripSeparator(),
                     updateToolStripMenuItem,
+                    new ToolStripMenuItem("About", null, OnAboutActivated),
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Exit", null, OnExitActivated)
                 }
@@ -78,7 +81,7 @@ class SysTray : Component
         set => updateToolStripMenuItem.Text = value;
     }
 
-    internal void OnActiveActivated(object sender, EventArgs e)
+    private void OnActiveActivated(object sender, EventArgs e)
     {
         if (e is MouseEventArgs mouseEventArgs && MouseButtons.Right == mouseEventArgs.Button)
         {
@@ -88,17 +91,22 @@ class SysTray : Component
         ActiveActivated?.Invoke(this, EventArgs.Empty);
     }
 
-    internal void OnActiveOnStartActivated(object sender, EventArgs e)
+    private void OnActiveOnStartActivated(object sender, EventArgs e)
     {
         ActiveOnStartActivated?.Invoke(this, EventArgs.Empty);
     }
 
-    internal void OnUpdateActivated(object sender, EventArgs e)
+    private void OnUpdateActivated(object sender, EventArgs e)
     {
         UpdateActivated?.Invoke(this, EventArgs.Empty);
     }
 
-    internal void OnExitActivated(object sender, EventArgs e)
+    private void OnAboutActivated(object sender, EventArgs e)
+    {
+        AboutActivated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnExitActivated(object sender, EventArgs e)
     {
         ExitActivated?.Invoke(this, EventArgs.Empty);
     }
