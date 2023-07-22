@@ -20,12 +20,12 @@ class SysTray : Component
     {
         activeToolStripMenuItem = new ToolStripMenuItem("Active", null, OnActiveActivated);
 
-        activeOnStartToolStripMenuItem = new ToolStripMenuItem("Active on Start", null, OnActiveOnStartActivated)
+        activeOnStartToolStripMenuItem = new ToolStripMenuItem("Active on start", null, OnActiveOnStartActivated)
         {
             Checked = Settings.ActiveOnStart
         };
 
-        updateToolStripMenuItem = new ToolStripMenuItem("Up-to-date", null, OnUpdateActivated);
+        updateToolStripMenuItem = new ToolStripMenuItem("Check for update", null, OnUpdateActivated);
 
         notifyIcon = new NotifyIcon()
         {
@@ -33,10 +33,9 @@ class SysTray : Component
             {
                 Items =
                 {
-                activeToolStripMenuItem,
+                    activeToolStripMenuItem,
                     new ToolStripSeparator(),
                     activeOnStartToolStripMenuItem,
-                    new ToolStripSeparator(),
                     updateToolStripMenuItem,
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Exit", null, OnExitActivated)
@@ -52,7 +51,7 @@ class SysTray : Component
 
     internal void SetStatus(string status, bool activeStatus, Icon icon)
     {
-        notifyIcon.Text = Assembly.GetExecutingAssembly().GetName().Name;
+        notifyIcon.Text = "WinAwake";
         if (status?.Trim().Length > 0)
         {
             notifyIcon.Text += "\n" + status.Trim();
@@ -74,9 +73,16 @@ class SysTray : Component
         set => activeOnStartToolStripMenuItem.Checked = value;
     }
 
-    internal bool UpdateAvailable
+    internal bool UpdateEnabled
     {
-        set => updateToolStripMenuItem.Text = (value ? "Update available" : "Up-to-data");
+        get => updateToolStripMenuItem.Enabled;
+        set => updateToolStripMenuItem.Enabled = value;
+    }
+
+    internal string UpdateText
+    {
+        get => updateToolStripMenuItem.Text;
+        set => updateToolStripMenuItem.Text = value;
     }
 
     internal void OnActiveActivated(object sender, EventArgs e)

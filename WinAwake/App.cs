@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("WinAwake")]
@@ -24,7 +25,6 @@ class App : ApplicationContext
     private static readonly Icon IdleIcon;
 
     private readonly Worker worker;
-    private readonly UpdateChecker updateChecker;
     private readonly SysTray sysTray;
 
     static App()
@@ -67,9 +67,6 @@ class App : ApplicationContext
     public App()
     {
         worker = new Worker();
-        updateChecker = new UpdateChecker();
-
-        updateChecker.StatusChanged += UpdateChecker_StatusChanged;
 
         sysTray = new SysTray("Idle", false, IdleIcon)
         {
@@ -87,14 +84,6 @@ class App : ApplicationContext
         }
 
         SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
-    }
-
-    private void UpdateChecker_StatusChanged(object sender, EventArgs e)
-    {
-        if (updateChecker.UpdateAvailable)
-        {
-            sysTray.UpdateAvailable = true;
-        }
     }
 
     private void SysTray_ActiveActivated(object sender, EventArgs e)
@@ -141,15 +130,26 @@ class App : ApplicationContext
         Settings.ActiveOnStart = sysTray.ActiveOnStartChecked;
     }
 
-    private void SysTray_UpdateActivated(object sender, EventArgs e)
+    private async void SysTray_UpdateActivated(object sender, EventArgs e)
     {
-        if (updateChecker.UpdateAvailable)
+        if (sysTray.UpdateText == "!!! Download update !!!")
         {
             Process.Start(new ProcessStartInfo { FileName = "https://github.com/RubenSilveira/WinAwake/releases/latest", UseShellExecute = true });
         }
         else
         {
-            Process.Start(new ProcessStartInfo { FileName = "https://github.com/RubenSilveira/WinAwake", UseShellExecute = true });
+            sysTray.UpdateEnabled = false;
+            sysTray.UpdateText = "Checking for update";
+
+            if (await Task<bool>.Run(() => { return UpdateChecker.Check(); }))
+            {
+                sysTray.UpdateText = "!!! Download update !!!";
+                sysTray.UpdateEnabled = true;
+            }
+            else
+            {
+                sysTray.UpdateText = "No available update";
+            }
         }
     }
 
